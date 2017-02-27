@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Kitware.VTK;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReadVtkTEST;
-using Kitware.VTK;
 
 namespace ReadVtkTESTtest
 {
