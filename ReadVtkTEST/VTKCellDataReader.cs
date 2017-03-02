@@ -1,4 +1,5 @@
 ﻿using Kitware.VTK;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -29,9 +30,11 @@ namespace ReadVtkTEST
 				var numbComp = cellData.GetArray(i).GetNumberOfComponents();
 				for (int j = 0; j < cellData.GetArray(i).GetNumberOfTuples(); j++)
 				{
-					var tempTuple = cellData.GetArray(i).GetTuple(j);
+					
 					double[] managedArray = new double[numbComp];
-					Marshal.Copy(tempTuple, managedArray, 0, numbComp);
+					IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
+					cellData.GetArray(i).GetTuple(j, pointerArray);
+					Marshal.Copy(pointerArray, managedArray, 0, numbComp);
 					dataArray.AddRange(managedArray);
 
 					if (arrayName == "AllForcesBeam") //Modelo 6 iterates from 0-5 in all cell_vertexes to find the max and min forces (X,Y,Z,Mx,My,Mz)
