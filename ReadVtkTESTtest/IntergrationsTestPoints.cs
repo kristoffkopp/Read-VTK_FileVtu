@@ -1,6 +1,7 @@
 ﻿using Kitware.VTK;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReadVtkTEST;
+using System.IO;
 
 namespace ReadVtkTESTtest
 {
@@ -16,7 +17,8 @@ namespace ReadVtkTESTtest
 		[TestInitialize]
 		public void init()
 		{
-			VTKreader reader = new VTKreader(@"C:\Users\Kristoffer\Dropbox\Dokumenter\Masteroppgave - Spring 2017\TDD vtk-files\TESTTESTTESTTEST.vtu");
+			var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
+			VTKreader reader = new VTKreader(@path);
 			unstructuredGrid = reader.readFile();
 			pointReader = new VTKPointReader();
 

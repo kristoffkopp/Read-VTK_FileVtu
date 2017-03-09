@@ -64,6 +64,7 @@
     <Compile Include="IntegrationTestCells.cs" />
     <Compile Include="IntergrationsTestPoints.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VTKCellDataReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReadVtkTEST\ReadVtkTEST.csproj">

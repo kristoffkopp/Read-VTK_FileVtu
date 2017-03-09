@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Media.Media3D;
 
@@ -20,7 +21,8 @@ namespace ReadVtkTEST
 			{
 				RedirectVTKOutput errorObserver = new RedirectVTKOutput();
 
-				VTKreader reader = new VTKreader(@"C:\Users\Kristoffer\Dropbox\Dokumenter\Masteroppgave - Spring 2017\TDD vtk-files\TESTTESTTESTTEST.vtu");
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
+				VTKreader reader = new VTKreader(@path);
 				var unstructuredGrid = reader.readFile();
 
 				VTKPointReader pointReader = new VTKPointReader();

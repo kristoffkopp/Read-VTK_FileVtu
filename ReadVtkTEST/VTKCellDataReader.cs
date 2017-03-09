@@ -34,6 +34,11 @@ namespace ReadVtkTEST
 					double[] managedArray = new double[numbComp];
 					IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
 					cellData.GetArray(i).GetTuple(j, pointerArray);
+					
+					//Did not work to use vktFloatArray, instead can use this:
+					//for (int k = 0; k<numbComp; k++)
+					//		cellData.GetArray(i).GetComponent(j, k);
+
 					Marshal.Copy(pointerArray, managedArray, 0, numbComp);
 					dataArray.AddRange(managedArray);
 
@@ -45,6 +50,40 @@ namespace ReadVtkTEST
 				}
 			}
 			return dataArray;
+		}
+
+		public double[][] readTransformationBeam(vtkUnstructuredGrid unstructuredGrid)
+		{
+			return readTransformation(unstructuredGrid, "TransformationBeam");
+		}
+		public double[][] readTransformationShell(vtkUnstructuredGrid unstructuredGrid)
+		{
+			return readTransformation(unstructuredGrid, "TransformationShell");
+		}
+
+		public double[][] readTransformation(vtkUnstructuredGrid unstructuredGrid, string arrayName)
+		{
+			var cellData = unstructuredGrid.GetCellData();
+			double[][] TransformationLists = null;
+			for (int i = 0; i < cellData.GetNumberOfArrays(); i++)
+			{
+				if (cellData.GetArrayName(i) != arrayName)
+					continue;
+
+				var numbComp = cellData.GetArray(i).GetNumberOfComponents();
+				var numbTuples = cellData.GetArray(i).GetNumberOfTuples();
+				TransformationLists = new double[numbTuples][];
+				for (int j = 0; j < numbTuples; j++)
+				{
+					double[] managedArray = new double[numbComp];
+					IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
+					cellData.GetArray(i).GetTuple(j, pointerArray);
+					Marshal.Copy(pointerArray, managedArray, 0, numbComp);
+
+					TransformationLists[j] = managedArray;
+				}
+			}
+			return TransformationLists;
 		}
 
 		private void calculateExtremeForces(double[] managedArray, int numberOfForces, double[] calculateMin, double[] calculateMax)
