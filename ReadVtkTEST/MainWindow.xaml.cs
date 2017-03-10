@@ -44,6 +44,8 @@ namespace ReadVtkTEST
 				var minForcesBeam = cellDataReader.CalculateMinForcesBeam;
 				var maxForceShell = cellDataReader.CalculateMaxForcesShell;
 				var minForcesShell = cellDataReader.CalculateMinForcesShell;
+				var translationBeam = cellDataReader.readTransformationBeam(unstructuredGrid);
+				var translationShell = cellDataReader.readTransformationShell(unstructuredGrid);
 
 				VTKFieldDataReader fieldDataReader = new VTKFieldDataReader();
 				fieldDataReader.readFieldData(unstructuredGrid);
