@@ -1,4 +1,5 @@
 ﻿using Kitware.VTK;
+using System;
 
 namespace ReadVtkTEST
 {
@@ -32,7 +33,7 @@ namespace ReadVtkTEST
 						continue;
 
 					for (int k = 0; k < 3; k++)
-						if (tuple[k] > ExtremeDisplacement[k])
+						if (Math.Abs(tuple[k]) > Math.Abs(ExtremeDisplacement[k]))
 							ExtremeDisplacement[k] = tuple[k];
 				}
 			}

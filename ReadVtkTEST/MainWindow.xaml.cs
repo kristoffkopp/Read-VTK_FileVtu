@@ -21,7 +21,7 @@ namespace ReadVtkTEST
 			{
 				RedirectVTKOutput errorObserver = new RedirectVTKOutput();
 
-				var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "FocusResults.vtu");
 				VTKreader reader = new VTKreader(@path);
 				var unstructuredGrid = reader.readFile();
 
