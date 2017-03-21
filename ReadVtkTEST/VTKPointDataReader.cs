@@ -16,26 +16,22 @@ namespace ReadVtkTEST
 
 		private double[,] readTuple3NameSpecificPointDataArray(vtkUnstructuredGrid unstructuredGrid, string dataArrayName, bool readExtremeForces)
 		{
-			double[,] dataArray = new double[,] { };
-			var pointData = unstructuredGrid.GetPointData();
+            VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
+            var pointDataArray = vtkSpecificDataArray.getNameSpecificDataArrayPointData(unstructuredGrid, dataArrayName);
+            double[,] dataArray = new double[,] { };
 			ExtremeDisplacement = new double[3];
-			for (int i = 0; i < pointData.GetNumberOfArrays(); i++)
+			
+			dataArray = new double[pointDataArray.GetNumberOfTuples(), 3];
+			for (int j = 0; j < pointDataArray.GetNumberOfTuples(); j++)
 			{
-				if (pointData.GetArrayName(i) != dataArrayName)
-				continue;
+				var tuple = pointDataArray.GetTuple3(j);
+				dataArray[j, 0] = tuple[0]; dataArray[j, 1] = tuple[1]; dataArray[j, 2] = tuple[2];
+				if (!readExtremeForces)
+					continue;
 
-				dataArray = new double[pointData.GetArray(i).GetNumberOfTuples(), 3];
-				for (int j = 0; j < pointData.GetArray(i).GetNumberOfTuples(); j++)
-				{
-					var tuple = pointData.GetArray(i).GetTuple3(j);
-					dataArray[j, 0] = tuple[0]; dataArray[j, 1] = tuple[1]; dataArray[j, 2] = tuple[2];
-					if (!readExtremeForces)
-						continue;
-
-					for (int k = 0; k < 3; k++)
-						if (Math.Abs(tuple[k]) > Math.Abs(ExtremeDisplacement[k]))
-							ExtremeDisplacement[k] = tuple[k];
-				}
+				for (int k = 0; k < 3; k++)
+					if (Math.Abs(tuple[k]) > Math.Abs(ExtremeDisplacement[k]))
+						ExtremeDisplacement[k] = tuple[k];
 			}
 			return dataArray;
 		}

@@ -30,5 +30,18 @@ namespace ReadVtkTEST
             }
             return dataArray;
         }
+        public vtkDataArray getNameSpecificDataArrayPointData(vtkUnstructuredGrid unstructuredGrid, string arrayName)
+        {
+            vtkDataArray dataArray = null;
+            var pointData = unstructuredGrid.GetPointData();
+            for (int i = 0; i < pointData.GetNumberOfArrays(); i++)
+            {
+                if (pointData.GetArrayName(i) != arrayName)
+                    continue;
+
+                dataArray = pointData.GetArray(i);
+            }
+            return dataArray;
+        }
     }
 }
