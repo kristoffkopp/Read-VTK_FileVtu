@@ -48,7 +48,6 @@ namespace ReadVtkTEST
 				var translationShell = cellDataReader.readTransformationShell(unstructuredGrid);
 
 				VTKFieldDataReader fieldDataReader = new VTKFieldDataReader();
-				fieldDataReader.readFieldData(unstructuredGrid);
 
 				ElementReader elementReader = new ElementReader();
 				var elements = elementReader.readCellsAndPoints(vtkCells, vectorPoints);

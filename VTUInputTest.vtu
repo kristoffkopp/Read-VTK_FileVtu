@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">
+  <UnstructuredGrid>
+    <FieldData>
+      <DataArray type="Float64" Name="ExtraData" NumberOfComponents="3" NumberOfTuples="1" format="ascii" RangeMin="4.1158231255" RangeMax="4.1158231255">
+        1.1 2.2 3.3
+      </DataArray>
+    </FieldData>
+    <Piece NumberOfPoints="4" NumberOfCells="2">
+      <PointData>
+        <DataArray type="Float32" Name="Translation" NumberOfComponents="3" format="ascii" RangeMin="0.37416575023" RangeMax="5.5443664561">
+          0.10000000149 0.20000000298 0.30000001192 1.1000000238 1.2000000477 1.2999999523
+          2.0999999046 2.2000000477 2.2999999523 3.0999999046 3.2000000477 3.2999999523
+        </DataArray>
+        <DataArray type="Float32" Name="RotationVector" NumberOfComponents="3" format="ascii" RangeMin="0.37416575023" RangeMax="5.5443664561">
+          0.10000000149 0.20000000298 0.30000001192 1.1000000238 1.2000000477 1.2999999523
+          2.0999999046 2.2000000477 2.2999999523 3.0999999046 3.2000000477 3.2999999523
+        </DataArray>
+      </PointData>
+      <CellData>
+	<DataArray type="Float32" Name="AllForcesBeam" NumberOfComponents="12" format="ascii" RangeMin="7.0529922246" RangeMax="77.252993323">
+          0.1001489982 0.20000298321 0.30000191927 1.1000237465 1.2004770041 1.295230031
+          2.0990459919 2.2000477314 2.2999229431 3.0999999046 3.2000000477 3.2999999523
+          10.100149155 10.20000267 10.300002098 11.100024223 11.200476646 11.295229912
+          21.099046707 21.200048447 21.299922943 36.099998474 36.200000763 36.299999237
+        </DataArray>
+	 <DataArray type="Float32" Name="TransformationBeam" NumberOfComponents="9" format="ascii" RangeMin="7.0529922246" RangeMax="77.252993323">
+          -0.010223695887960731 0.00067015134805017 0.99994751209229038 0.999946301368936 -0.0016874680754783075 0.01022481442760873
+          0.001694231438 0.999998351672974 -0.00065286320141584153 -0.010223695887960731 0.00067015134805017 0.99994751209229038
+          0.999946301368936 -0.0016874680754783075 0.01022481442760873 -0.010223695887960731 0.00067015134805017 0.99994751209229038
+        </DataArray>
+	<DataArray type="Float32" Name="TransformationShell" NumberOfComponents="9" format="ascii" RangeMin="7.0529922246" RangeMax="77.252993323">
+          -0.010223695887960731 0.00067015134805017 0.99994751209229038 0.999946301368936 -0.0016874680754783075 0.01022481442760873
+          0.001694231438 0.999998351672974 -0.00065286320141584153 -0.010223695887960731 0.00067015134805017 0.99994751209229038
+          0.999946301368936 -0.0016874680754783075 0.01022481442760873 -0.010223695887960731 0.00067015134805017 0.99994751209229038
+        </DataArray>
+        <DataArray type="Float32" Name="AllForcesShell" NumberOfComponents="24" format="ascii" RangeMin="7.3629851012" RangeMax="77.545475861">
+          0.1001489982 0.20000298321 0.30000191927 1.1000237465 1.2004770041 1.295230031
+          2.0990459919 2.2000477314 2.2999229431 3.0999999046 3.2000000477 3.2999999523
+          0.1001489982 0.20000298321 0.30000191927 1.1000237465 1.2004770041 1.295230031
+          2.0990459919 2.2000477314 2.2999229431 3.0999999046 3.2000000477 3.2999999523
+          10.100149155 10.20000267 10.300002098 11.100024223 11.200476646 11.295229912
+          21.099046707 21.200048447 21.299922943 36.099998474 36.200000763 36.299999237
+0.1001489982 0.20000298321 0.30000191927 1.1000237465 1.2004770041 1.295230031
+0.1001489982 0.20000298321 0.30000191927 1.1000237465 1.2004770041 1.295230031
+        </DataArray>
+      </CellData>
+      <Points>
+        <DataArray type="Float32" Name="Points" NumberOfComponents="3" format="ascii" RangeMin="0" RangeMax="1">
+          0 0 0 1 0 0
+          0 1 0 0 0 1
+        </DataArray>
+      </Points>
+      <Cells>
+        <DataArray type="Int64" Name="connectivity" format="ascii" RangeMin="0" RangeMax="3">
+          0 1 2 0 2 3
+        </DataArray>
+        <DataArray type="Int64" Name="offsets" format="ascii" RangeMin="3" RangeMax="6">
+          3 6
+        </DataArray>
+        <DataArray type="UInt8" Name="types" format="ascii" RangeMin="5" RangeMax="5">
+          5 5
+        </DataArray>
+      </Cells>
+    </Piece>
+  </UnstructuredGrid>
+</VTKFile>

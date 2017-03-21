@@ -7,7 +7,7 @@ using System.IO;
 namespace ReadVtkTESTtest
 {
 	[TestClass]
-	public class VTKCellDataReaderTest
+	public class VTKCellDataReaderTramsformationUnitTest
 	{
 		private vtkUnstructuredGrid unstructuredGrid;
 		private VTKCellDataReader cellDataReader;

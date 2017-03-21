@@ -18,70 +18,57 @@ namespace ReadVtkTEST
 			CalculateMinForcesShell = new double[8];
 			return readUnknownTuplesizeNameSpecificCellDataArray(unstructuredGrid, "AllForcesShell");
 		}
-		private List<double> readUnknownTuplesizeNameSpecificCellDataArray(vtkUnstructuredGrid unstructuredGrid, string arrayName)
+        public double[][] readTransformationBeam(vtkUnstructuredGrid unstructuredGrid)
+        {
+            return readTransformation(unstructuredGrid, "TransformationBeam");
+        }
+        public double[][] readTransformationShell(vtkUnstructuredGrid unstructuredGrid)
+        {
+            return readTransformation(unstructuredGrid, "TransformationShell");
+        }
+        private List<double> readUnknownTuplesizeNameSpecificCellDataArray(vtkUnstructuredGrid unstructuredGrid, string arrayName)
 		{
-			var dataArray = new List<double>();
-			var cellData = unstructuredGrid.GetCellData();
-			for (int i = 0; i < cellData.GetNumberOfArrays(); i++)
-			{
-				if (cellData.GetArrayName(i) != arrayName)
-					continue;
+            VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
+            var cellDataArray = vtkSpecificDataArray.getNameSpecificDataArrayCellData(unstructuredGrid, arrayName);
+            var dataArray = new List<double>();
+			var numbComp = cellDataArray.GetNumberOfComponents();
+			for (int j = 0; j < cellDataArray.GetNumberOfTuples(); j++)
+			{	
+				double[] managedArray = new double[numbComp];
+				IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
+				cellDataArray.GetTuple(j, pointerArray);
+                Marshal.Copy(pointerArray, managedArray, 0, numbComp);
+                //Did not work to use vktFloatArray, instead can use this:
+                //for (int k = 0; k<numbComp; k++)
+                //		cellDataArray.GetComponent(j, k);
 
-				var numbComp = cellData.GetArray(i).GetNumberOfComponents();
-				for (int j = 0; j < cellData.GetArray(i).GetNumberOfTuples(); j++)
-				{
-					
-					double[] managedArray = new double[numbComp];
-					IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
-					cellData.GetArray(i).GetTuple(j, pointerArray);
-					
-					//Did not work to use vktFloatArray, instead can use this:
-					//for (int k = 0; k<numbComp; k++)
-					//		cellData.GetArray(i).GetComponent(j, k);
+                dataArray.AddRange(managedArray);
 
-					Marshal.Copy(pointerArray, managedArray, 0, numbComp);
-					dataArray.AddRange(managedArray);
+				if (arrayName == "AllForcesBeam") //Modelo 6 iterates from 0-5 in all cell_vertexes to find the max and min forces (X,Y,Z,Mx,My,Mz)
+					calculateExtremeForces(managedArray, 6, CalculateMinForcesBeam, CalculateMaxForcesBeam);
 
-					if (arrayName == "AllForcesBeam") //Modelo 6 iterates from 0-5 in all cell_vertexes to find the max and min forces (X,Y,Z,Mx,My,Mz)
-						calculateExtremeForces(managedArray, 6, CalculateMinForcesBeam, CalculateMaxForcesBeam);
-
-					if (arrayName == "AllForcesShell") //Modelo 8 iterates from 0-7 in all cell_vertexes to find the max and min value (Nx,Ny,Nz,Mx,My,Mz,Vzx,Vzy)
-						calculateExtremeForces(managedArray, 8, CalculateMinForcesShell, CalculateMaxForcesShell);
-				}
-			}
+				if (arrayName == "AllForcesShell") //Modelo 8 iterates from 0-7 in all cell_vertexes to find the max and min value (Nx,Ny,Nz,Mx,My,Mz,Vzx,Vzy)
+					calculateExtremeForces(managedArray, 8, CalculateMinForcesShell, CalculateMaxForcesShell);
+			}	
 			return dataArray;
-		}
-
-		public double[][] readTransformationBeam(vtkUnstructuredGrid unstructuredGrid)
-		{
-			return readTransformation(unstructuredGrid, "TransformationBeam");
-		}
-		public double[][] readTransformationShell(vtkUnstructuredGrid unstructuredGrid)
-		{
-			return readTransformation(unstructuredGrid, "TransformationShell");
 		}
 
 		public double[][] readTransformation(vtkUnstructuredGrid unstructuredGrid, string arrayName)
 		{
-			var cellData = unstructuredGrid.GetCellData();
+            VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
 			double[][] TransformationLists = null;
-			for (int i = 0; i < cellData.GetNumberOfArrays(); i++)
+            var cellDataArray = vtkSpecificDataArray.getNameSpecificDataArrayCellData(unstructuredGrid, arrayName);
+            var numbComp = cellDataArray.GetNumberOfComponents();
+			var numbTuples = cellDataArray.GetNumberOfTuples();
+			TransformationLists = new double[numbTuples][];
+			for (int j = 0; j < numbTuples; j++)
 			{
-				if (cellData.GetArrayName(i) != arrayName)
-					continue;
+				double[] managedArray = new double[numbComp];
+				IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
+				cellDataArray.GetTuple(j, pointerArray);
+				Marshal.Copy(pointerArray, managedArray, 0, numbComp);
 
-				var numbComp = cellData.GetArray(i).GetNumberOfComponents();
-				var numbTuples = cellData.GetArray(i).GetNumberOfTuples();
-				TransformationLists = new double[numbTuples][];
-				for (int j = 0; j < numbTuples; j++)
-				{
-					double[] managedArray = new double[numbComp];
-					IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
-					cellData.GetArray(i).GetTuple(j, pointerArray);
-					Marshal.Copy(pointerArray, managedArray, 0, numbComp);
-
-					TransformationLists[j] = managedArray;
-				}
+				TransformationLists[j] = managedArray;
 			}
 			return TransformationLists;
 		}
@@ -90,10 +77,10 @@ namespace ReadVtkTEST
 		{
 			for (int k = 0; k < managedArray.Length; k++)
 			{
-				if (managedArray[k] > calculateMax[k % numberOfForces])
+				if (Math.Abs(managedArray[k]) > Math.Abs(calculateMax[k % numberOfForces]))
 					calculateMax[k % numberOfForces] = managedArray[k];
 
-				if (managedArray[k] < calculateMin[k % numberOfForces] || calculateMin[k % numberOfForces] == 0)
+				if (Math.Abs(managedArray[k]) < Math.Abs(calculateMin[k % numberOfForces]) || Math.Abs(calculateMin[k % numberOfForces]) == 0)
 					calculateMin[k % numberOfForces] = managedArray[k];
 			}
 		}
