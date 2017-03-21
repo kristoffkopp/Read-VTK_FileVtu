@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReadVtkTEST;
 using Kitware.VTK;
 using System.IO;
+using System.Windows;
 
 namespace ReadVtkTESTtest
 {
@@ -16,6 +17,7 @@ namespace ReadVtkTESTtest
         [TestInitialize]
         public void init()
         {
+            RedirectVTKOutput errorObserver = new RedirectVTKOutput();
             var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
             VTKreader reader = new VTKreader(@path);
             unstructuredGrid = reader.readFile();

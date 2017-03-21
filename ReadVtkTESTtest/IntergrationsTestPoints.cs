@@ -17,7 +17,8 @@ namespace ReadVtkTESTtest
 		[TestInitialize]
 		public void init()
 		{
-			var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
+            RedirectVTKOutput errorObserver = new RedirectVTKOutput();
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
 			VTKreader reader = new VTKreader(@path);
 			unstructuredGrid = reader.readFile();
 			pointReader = new VTKPointReader();
