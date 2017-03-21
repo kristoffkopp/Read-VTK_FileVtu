@@ -61,6 +61,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IntegrationsTestsFieldData.cs" />
     <Compile Include="IntegrationTestCells.cs" />
     <Compile Include="IntergrationsTestPoints.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

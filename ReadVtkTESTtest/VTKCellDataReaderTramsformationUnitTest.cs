@@ -61,7 +61,7 @@ namespace ReadVtkTESTtest
 		[TestMethod]
 		public void readTransformationBeamShouldReturnSpecifiedElementOfSecoundListThirdElement()
 		{
-			//Does not read full double, as other integrationstests fail.
+			//Reads all doubles - but CHANGES decimals (not only adding)
 			var lists = cellDataReader.readTransformationBeam(unstructuredGrid);
 			Assert.AreEqual(0.99994751209229038, lists[1][2]);
 		}
