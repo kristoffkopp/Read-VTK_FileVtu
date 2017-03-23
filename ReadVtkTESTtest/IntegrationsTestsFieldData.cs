@@ -21,9 +21,13 @@ namespace ReadVtkTESTtest
             var path = Path.Combine(Directory.GetCurrentDirectory(), "VTUInputTest.vtu");
             VTKreader reader = new VTKreader(@path);
             unstructuredGrid = reader.readFile();
-            fieldDataReader = new VTKFieldDataReader();
-            allForcesBeam = fieldDataReader.readAllForcesBeam(unstructuredGrid, false);
-            isInAcentingContinuesOrder = fieldDataReader.isIDsContinuesAcendingOrder(unstructuredGrid, "BeamIDs");
+            fieldDataReader = new VTKFieldDataReader(unstructuredGrid);
+            allForcesBeam = fieldDataReader.readAllForcesBeam(true);
+            int[] elIDsBeam = new int[20];
+            for (int i = 0; i < 20; i++)
+                elIDsBeam[i] = i;
+
+            isInAcentingContinuesOrder = fieldDataReader.hasCorrectIDMapping("BeamIDs", elIDsBeam);
         }
         
         [TestMethod]

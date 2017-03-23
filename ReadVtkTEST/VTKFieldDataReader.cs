@@ -1,23 +1,28 @@
 ﻿using Kitware.VTK;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace ReadVtkTEST
 {
-	public class VTKFieldDataReader
-	{
-        public double[,] readAllForcesBeam(vtkUnstructuredGrid unstructuredGrid, bool needsMapping)
+    public class VTKFieldDataReader
+    {
+        private vtkUnstructuredGrid m_UnstructuredGrid;
+        public VTKFieldDataReader(vtkUnstructuredGrid unstructuredGrid)
+        {
+            m_UnstructuredGrid = unstructuredGrid;
+        }
+
+        public double[,] readAllForcesBeam(bool hasCorrectIDMapping)
         {
             CalculateMaxForcesBeam = new double[6];
             CalculateMinForcesBeam = new double[6];
-            return readUnknownTuplesizeNameSpecificFieldDataArray(unstructuredGrid, "BeamStressRes", needsMapping);
+            return readUnknownTuplesizeNameSpecificFieldDataArray(m_UnstructuredGrid, "BeamStressRes", hasCorrectIDMapping);
         }
-        public double[][] readAllForcesShell(vtkUnstructuredGrid unstructuredGrid, bool needsMapping)
+        public double[][] readAllForcesShell(bool hasCorrectIDMapping)
         {
             CalculateMaxForcesShell = new double[8];
             CalculateMinForcesShell = new double[8];
-            var tempArray = readUnknownTuplesizeNameSpecificFieldDataArray(unstructuredGrid, "AllForcesShell", needsMapping);
+            var tempArray = readUnknownTuplesizeNameSpecificFieldDataArray(m_UnstructuredGrid, "AllForcesShell", hasCorrectIDMapping);
             double[][] shellStressArray = new double[tempArray.Length][];
             for (int i = 0; i < tempArray.Length; i++)
             {
@@ -30,19 +35,22 @@ namespace ReadVtkTEST
             return shellStressArray;
         }
 
-        public double[,] readUnknownTuplesizeNameSpecificFieldDataArray(vtkUnstructuredGrid unstructuredGrid, string arrayName, bool needsMapping)
+        private double[,] readUnknownTuplesizeNameSpecificFieldDataArray(vtkUnstructuredGrid unstructuredGrid, string arrayName, bool hasCorrectIDMapping)
         {
             VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
             var fieldDataArray = vtkSpecificDataArray.getNameSpecificDataArrayFieldData(unstructuredGrid, arrayName);
-            var numbComp = fieldDataArray.GetNumberOfComponents();            
+            if (fieldDataArray == null)
+                return new double[0, 0];
+
+            var numbComp = fieldDataArray.GetNumberOfComponents();
             var dataArray = new double[fieldDataArray.GetNumberOfTuples(), numbComp];
             for (int j = 0; j < fieldDataArray.GetNumberOfTuples(); j++)
             {
                 double[] managedArray = new double[numbComp];
                 IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
 
-                if (needsMapping)
-                    fieldDataArray.GetTuple((BeamIDsNonContiniusAcending[j] - 1), pointerArray);
+                if (!hasCorrectIDMapping)
+                    fieldDataArray.GetTuple(BeamIDsNonContiniusAcending[j], pointerArray);
                 else
                     fieldDataArray.GetTuple(j, pointerArray);
 
@@ -75,27 +83,33 @@ namespace ReadVtkTEST
             }
         }
 
-        public bool isIDsContinuesAcendingOrder(vtkUnstructuredGrid unstructuredGrid, string idType)
+        public bool hasCorrectIDMapping(string idType, int[] IDsBeam)
         {
             VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
-            var fieldDataArray = vtkSpecificDataArray.getNameSpecificDataArrayFieldData(unstructuredGrid, idType);
-            var ascending = true;
+            var fieldDataArray = vtkSpecificDataArray.getNameSpecificDataArrayFieldData(m_UnstructuredGrid, idType);
+            if (fieldDataArray == null)
+                return false;
+
+            var hasCorrectIDMapping = true;
             int[] dataArray = new int[fieldDataArray.GetNumberOfTuples()];
-            for (int j = 0; j < fieldDataArray.GetNumberOfTuples(); j++)
+            if (fieldDataArray.GetNumberOfTuples() != IDsBeam.Length)
+                return false;
+
+            for (int i = 0; i < fieldDataArray.GetNumberOfTuples(); i++)
             {
-                if (j != 0 && (dataArray[j - 1] + 1 != fieldDataArray.GetTuple1(j)))
-                    ascending = false;
+                if (IDsBeam[i] != (fieldDataArray.GetTuple1(i) - 1))
+                    hasCorrectIDMapping = false;
 
-                dataArray[j] = (int)fieldDataArray.GetTuple1(j);
+                dataArray[i] = (int)(fieldDataArray.GetTuple1(i) - 1);
             }
-            if (!ascending && idType == "BeamIDs")
-                BeamIDsNonContiniusAcending = dataArray;
-            else if (!ascending && idType == "ShellIDs")
-                ShellIDsNonContiniusAcending = dataArray;
-            
-            return ascending;
-        }
 
+            if (!hasCorrectIDMapping && idType == "BeamIDs")
+                BeamIDsNonContiniusAcending = dataArray;
+            else if (!hasCorrectIDMapping && idType == "ShellIDs")
+                ShellIDsNonContiniusAcending = dataArray;
+
+            return hasCorrectIDMapping;
+        }
         public double[] CalculateMaxForcesBeam { get; private set; }
         public double[] CalculateMinForcesBeam { get; private set; }
         public double[] CalculateMaxForcesShell { get; private set; }
