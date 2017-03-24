@@ -86,6 +86,7 @@
     <Compile Include="VTKCell.cs" />
     <Compile Include="VTKCellDataReader.cs" />
     <Compile Include="VTKCellReader.cs" />
+    <Compile Include="VTKCorrectIDMapping.cs" />
     <Compile Include="VTKErrorObserver.cs" />
     <Compile Include="VTKFieldDataReader.cs" />
     <Compile Include="VTKgetNameSpecificVTKDataArray.cs" />

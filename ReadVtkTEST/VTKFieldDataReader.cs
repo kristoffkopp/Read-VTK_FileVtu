@@ -82,34 +82,6 @@ namespace ReadVtkTEST
                     calculateMin[k % numberOfForces] = managedArray[k];
             }
         }
-
-        public bool hasCorrectIDMapping(string idType, int[] IDsBeam)
-        {
-            VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
-            var fieldDataArray = vtkSpecificDataArray.getNameSpecificDataArrayFieldData(m_UnstructuredGrid, idType);
-            if (fieldDataArray == null)
-                return false;
-
-            var hasCorrectIDMapping = true;
-            int[] dataArray = new int[fieldDataArray.GetNumberOfTuples()];
-            if (fieldDataArray.GetNumberOfTuples() != IDsBeam.Length)
-                return false;
-
-            for (int i = 0; i < fieldDataArray.GetNumberOfTuples(); i++)
-            {
-                if (IDsBeam[i] != (fieldDataArray.GetTuple1(i) - 1))
-                    hasCorrectIDMapping = false;
-
-                dataArray[i] = (int)(fieldDataArray.GetTuple1(i) - 1);
-            }
-
-            if (!hasCorrectIDMapping && idType == "BeamIDs")
-                BeamIDsNonContiniusAcending = dataArray;
-            else if (!hasCorrectIDMapping && idType == "ShellIDs")
-                ShellIDsNonContiniusAcending = dataArray;
-
-            return hasCorrectIDMapping;
-        }
         public double[] CalculateMaxForcesBeam { get; private set; }
         public double[] CalculateMinForcesBeam { get; private set; }
         public double[] CalculateMaxForcesShell { get; private set; }

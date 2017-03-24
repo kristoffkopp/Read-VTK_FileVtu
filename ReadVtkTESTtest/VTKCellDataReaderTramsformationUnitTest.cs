@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Kitware.VTK;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReadVtkTEST;
-using Kitware.VTK;
 using System.IO;
 
 namespace ReadVtkTESTtest
 {
-	[TestClass]
+    [TestClass]
 	public class VTKCellDataReaderTramsformationUnitTest
 	{
 		private vtkUnstructuredGrid unstructuredGrid;
