@@ -12,17 +12,17 @@ namespace ReadVtkTEST
             m_UnstructuredGrid = unstructuredGrid;
         }
 
-        public double[,] readAllForcesBeam(bool hasCorrectIDMapping)
+        public double[,] readAllForcesBeam(bool hasCorrectIDMapping, int[] correctedElID)
         {
             CalculateMaxForcesBeam = new double[6];
             CalculateMinForcesBeam = new double[6];
-            return readUnknownTuplesizeNameSpecificFieldDataArray(m_UnstructuredGrid, "BeamStressRes", hasCorrectIDMapping);
+            return readUnknownTuplesizeNameSpecificFieldDataArray(m_UnstructuredGrid, "BeamStressRes", hasCorrectIDMapping, correctedElID);
         }
-        public double[][] readAllForcesShell(bool hasCorrectIDMapping)
+        public double[][] readAllForcesShell(bool hasCorrectIDMapping, int[] correctedElID)
         {
             CalculateMaxForcesShell = new double[8];
             CalculateMinForcesShell = new double[8];
-            var tempArray = readUnknownTuplesizeNameSpecificFieldDataArray(m_UnstructuredGrid, "AllForcesShell", hasCorrectIDMapping);
+            var tempArray = readUnknownTuplesizeNameSpecificFieldDataArray(m_UnstructuredGrid, "AllForcesShell", hasCorrectIDMapping, correctedElID);
             double[][] shellStressArray = new double[tempArray.Length][];
             for (int i = 0; i < tempArray.Length; i++)
             {
@@ -35,7 +35,7 @@ namespace ReadVtkTEST
             return shellStressArray;
         }
 
-        private double[,] readUnknownTuplesizeNameSpecificFieldDataArray(vtkUnstructuredGrid unstructuredGrid, string arrayName, bool hasCorrectIDMapping)
+        private double[,] readUnknownTuplesizeNameSpecificFieldDataArray(vtkUnstructuredGrid unstructuredGrid, string arrayName, bool hasCorrectIDMapping, int[] correctedElID)
         {
             VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
             var fieldDataArray = vtkSpecificDataArray.getNameSpecificDataArrayFieldData(unstructuredGrid, arrayName);
@@ -50,7 +50,7 @@ namespace ReadVtkTEST
                 IntPtr pointerArray = Marshal.AllocCoTaskMem(sizeof(double) * managedArray.Length);
 
                 if (!hasCorrectIDMapping)
-                    fieldDataArray.GetTuple(BeamIDsNonContiniusAcending[j], pointerArray);
+                    fieldDataArray.GetTuple(correctedElID[j], pointerArray);
                 else
                     fieldDataArray.GetTuple(j, pointerArray);
 
@@ -86,7 +86,5 @@ namespace ReadVtkTEST
         public double[] CalculateMinForcesBeam { get; private set; }
         public double[] CalculateMaxForcesShell { get; private set; }
         public double[] CalculateMinForcesShell { get; private set; }
-        public int[] BeamIDsNonContiniusAcending { get; private set; }
-        public int[] ShellIDsNonContiniusAcending { get; private set; }
     }
 }

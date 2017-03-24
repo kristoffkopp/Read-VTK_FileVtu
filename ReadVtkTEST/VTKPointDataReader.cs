@@ -5,16 +5,20 @@ namespace ReadVtkTEST
 {
 	public class VTKPointDataReader
 	{
-		public double[,] readTranslation(vtkUnstructuredGrid unstructuredGrid)
+        private vtkUnstructuredGrid m_UnstructuredGrid;
+        public VTKPointDataReader(vtkUnstructuredGrid unstructuredGrid)
+        {
+            m_UnstructuredGrid = unstructuredGrid;
+        }
+		public double[,] readTranslation(bool hasCorrectIDMapping, int[] correctedNodeID)
 		{
-			return readTuple3NameSpecificPointDataArray(unstructuredGrid, "Translation", true);
+			return readTuple3NameSpecificPointDataArray(m_UnstructuredGrid, "Translation", true, hasCorrectIDMapping, correctedNodeID);
 		}
-		public double[,] readRotationVectors(vtkUnstructuredGrid unstructuredGrid)
+		public double[,] readRotationVectors(bool hasCorrectIDMapping, int[] correctedNodeID)
 		{
-			return readTuple3NameSpecificPointDataArray(unstructuredGrid, "RotationVector", false);
+			return readTuple3NameSpecificPointDataArray(m_UnstructuredGrid, "RotationVector", false, hasCorrectIDMapping, correctedNodeID);
 		}
-
-		private double[,] readTuple3NameSpecificPointDataArray(vtkUnstructuredGrid unstructuredGrid, string dataArrayName, bool readExtremeForces)
+		private double[,] readTuple3NameSpecificPointDataArray(vtkUnstructuredGrid unstructuredGrid, string dataArrayName, bool readExtremeForces, bool hasCorrectIDMapping, int[] correctedNodeID)
 		{
             VTKgetNameSpecificVTKDataArray vtkSpecificDataArray = new VTKgetNameSpecificVTKDataArray();
             var pointDataArray = vtkSpecificDataArray.getNameSpecificDataArrayPointData(unstructuredGrid, dataArrayName);
@@ -24,8 +28,13 @@ namespace ReadVtkTEST
 			dataArray = new double[pointDataArray.GetNumberOfTuples(), 3];
 			for (int j = 0; j < pointDataArray.GetNumberOfTuples(); j++)
 			{
-				var tuple = pointDataArray.GetTuple3(j);
-				dataArray[j, 0] = tuple[0]; dataArray[j, 1] = tuple[1]; dataArray[j, 2] = tuple[2];
+                double[] tuple;
+                if (!hasCorrectIDMapping)
+                    tuple = pointDataArray.GetTuple3(correctedNodeID[j]);
+                else
+                    tuple = pointDataArray.GetTuple3(j);
+
+                dataArray[j, 0] = tuple[0]; dataArray[j, 1] = tuple[1]; dataArray[j, 2] = tuple[2];
 				if (!readExtremeForces)
 					continue;
 

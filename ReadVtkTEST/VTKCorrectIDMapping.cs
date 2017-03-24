@@ -42,7 +42,6 @@ namespace ReadVtkTEST
 
             return hasCorrectIDMapping;
         }
-
         public int[] BeamIDsNonContiniusAcending { get; private set; }
         public int[] ShellIDsNonContiniusAcending { get; private set; }
         public int[] NodeIDsNonContiniusAcending { get; private set; }
