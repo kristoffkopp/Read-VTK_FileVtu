@@ -13,7 +13,6 @@ namespace ReadVtkTESTtest
         private vtkUnstructuredGrid unstructuredGrid;
         private VTKFieldDataReader fieldDataReader;
         private double[,] allForcesBeam;
-        private bool isInAcentingContinuesOrder;
         [TestInitialize]
         public void init()
         {
