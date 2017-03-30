@@ -22,12 +22,10 @@ namespace ReadVtkTESTtest
             VTKreader reader = new VTKreader(@path);
             unstructuredGrid = reader.readFile();
             fieldDataReader = new VTKFieldDataReader(unstructuredGrid);
-            allForcesBeam = fieldDataReader.readAllForcesBeam(true);
+            allForcesBeam = fieldDataReader.readAllForcesBeam(true, null);
             int[] elIDsBeam = new int[20];
             for (int i = 0; i < 20; i++)
                 elIDsBeam[i] = i;
-
-            isInAcentingContinuesOrder = fieldDataReader.hasCorrectIDMapping("BeamIDs", elIDsBeam);
         }
         
         [TestMethod]
@@ -82,11 +80,5 @@ namespace ReadVtkTESTtest
             bool negative = allForcesBeam[5,5] < 0;
             Assert.IsTrue(negative);
         }
-        [TestMethod]
-        public void VTUtestFileShouldReturnThatBeamIDsAreInAcendingContinuesOrder()
-        {
-            Assert.IsTrue(isInAcentingContinuesOrder);
-        }
-
     }
 }

@@ -23,9 +23,9 @@ namespace ReadVtkTESTtest
 			unstructuredGrid = reader.readFile();
 			pointReader = new VTKPointReader();
 
-			VTKPointDataReader pointDataReader = new VTKPointDataReader();
-			translation = pointDataReader.readTranslation(unstructuredGrid);
-			rotationVector = pointDataReader.readRotationVectors(unstructuredGrid);
+			VTKPointDataReader pointDataReader = new VTKPointDataReader(unstructuredGrid);
+			translation = pointDataReader.readTranslation(true, null);
+			rotationVector = pointDataReader.readRotationVectors(true, null);
 			extremeDisplacement = pointDataReader.ExtremeDisplacement;
 		}
 		[TestMethod]

@@ -28,10 +28,10 @@ namespace ReadVtkTEST
 				VTKPointReader pointReader = new VTKPointReader();
 				var vectorPoints = pointReader.pointReader(unstructuredGrid);
 
-				VTKPointDataReader pointDataReader = new VTKPointDataReader();
+				VTKPointDataReader pointDataReader = new VTKPointDataReader(unstructuredGrid);
 				//translation and rotationVector can be written as Vector3D - since cfemWrapper is converting double[,] to Vector3D 
-				var translation = pointDataReader.readTranslation(unstructuredGrid);
-				var rotationVector = pointDataReader.readRotationVectors(unstructuredGrid);
+				var translation = pointDataReader.readTranslation(true, null);
+				var rotationVector = pointDataReader.readRotationVectors(true, null);
 				var extremeDisplacement = pointDataReader.ExtremeDisplacement;
 
 				VTKCellReader cellReader = new VTKCellReader();
